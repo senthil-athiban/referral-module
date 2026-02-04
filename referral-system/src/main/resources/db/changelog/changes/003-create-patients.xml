@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="003-create-patients" author="senthilathiban">
+        <createTable tableName="patient">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="phone" type="varchar(20)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="active" type="boolean" defaultOnNull="true">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="patient" indexName="index-by-patient-phone">
+            <column name="phone" />
+        </createIndex>
+        <createIndex tableName="patient" indexName="index-by-patient-status">
+            <column name="active" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

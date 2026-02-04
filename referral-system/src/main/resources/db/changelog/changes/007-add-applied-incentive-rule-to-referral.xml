@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="006-add-applied-incentive-rule-to-referral" author="">
+        <addColumn tableName="referral_context">
+            <column name="applied_incentive_rule_id" type="uuid" />
+        </addColumn>
+
+        <addForeignKeyConstraint
+                baseTableName="referral_context"
+                baseColumnNames="applied_incentive_rule_id"
+                referencedTableName="referral_incentive_rule"
+                referencedColumnNames="id"
+                constraintName="fk_referral_applied_incentive_rule"
+        />
+    </changeSet>
+</databaseChangeLog>

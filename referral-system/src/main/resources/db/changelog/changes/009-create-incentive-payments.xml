@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="009-create-incentive-payments" author="senthil">
+        <createTable tableName="referral_incentive_payment">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            
+            <column name="incentive_id" type="uuid">
+                <constraints nullable="false" />
+            </column>
+
+            <!-- who paid -->
+            <column name="payer_type" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="payer_provider_id" type="uuid"/>
+            <column name="payer_external_provider_id" type="uuid"/>
+            <column name="payer_location_id" type="uuid"/>
+
+            <!-- money -->
+            <column name="amount" type="numeric(12,2)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="payment_mode" type="varchar(30)"/>
+            <column name="reference_id" type="varchar(100)"/>
+
+            <!-- audit -->
+            <column name="paid_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="recorded_by_provider_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="referral_incentive_payment"
+                baseColumnNames="incentive_id"
+                referencedTableName="referral_incentive"
+                referencedColumnNames="id"
+                constraintName="fk_payment_incentive"
+        />
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+   <changeSet id="007-create-incentive-rule" author="senthilathiban">
+       <createTable tableName="referral_incentive_rule">
+           <column name="id" type="uuid">
+               <constraints primaryKey="true" nullable="false" />
+           </column>
+           <column name="owner_provider_id" type="uuid">
+               <constraints nullable="false" />
+           </column>
+
+           <column name="referral_target_type" type="varchar(30)">
+               <constraints nullable="false" />
+           </column>
+
+           <column name="name" type="varchar(100)">
+               <constraints nullable="false" />
+           </column>
+
+           <column name="description" type="text" />
+
+           <column name="default_amount" type="numeric(12,2)">
+               <constraints nullable="false" />
+           </column>
+
+           <column name="active" type="boolean">
+               <constraints nullable="false"/>
+           </column>
+
+           <column name="created_at" type="timestamp">
+               <constraints nullable="false"/>
+           </column>
+       </createTable>
+
+       <createIndex tableName="referral_incentive_rule" indexName="indexing_by_provider_id">
+           <column name="owner_provider_id" />
+       </createIndex>
+   </changeSet>
+
+</databaseChangeLog>

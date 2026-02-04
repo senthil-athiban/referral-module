@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="005-create-external-provder" author="senthilathiban">
+        <createTable tableName="external_provider">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="provider_type" type="varchar(30)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="email" type="varchar(255)" />
+
+            <column name="phone" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="registration_number" type="varchar(100)" />
+            <column name="specialty" type="varchar(100)" />
+            <column name="location_id" type="uuid" />
+
+            <!-- linking when onboarded -->
+            <column name="linked_provider_id" type="uuid"/>
+
+            <!-- audit -->
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="external_provider" indexName="indexing-by-phone">
+            <column name="phone" />
+        </createIndex>
+
+        <createIndex tableName="external_provider" indexName="indexing-by-linked-provider-id">
+            <column name="linked_provider_id" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

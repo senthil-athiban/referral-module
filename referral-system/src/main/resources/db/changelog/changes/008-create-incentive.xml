@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="008-create-incentive" author="senthil">
+        <createTable tableName="referral_incentive">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <!-- referral -->
+            <column name="referral_id" type="uuid">
+                <constraints nullable="false" unique="true" />
+            </column>
+
+            <!-- rule snapshot -->
+            <column name="applied_rule_id" type="uuid">
+                <constraints nullable="false" />
+            </column>
+
+            <!-- beneficiary (earns) -->
+            <column name="beneficiary_provider_id" type="uuid">
+                <constraints nullable="false" />
+            </column>
+
+            <!-- obligated payer -->
+            <column name="payer_type" type="varchar(30)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="payer_provider_id" type="uuid" />
+            <column name="payer_external_provider_id" type="uuid" />
+            <column name="payer_location_id" type="uuid" />
+
+            <!-- money -->
+            <column name="base_amount" type="numeric(12,2)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="negotiated_amount" type="numeric(12,2)" />
+            <column name="net_amount" type="numeric(12,2)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="settlement_status" type="varchar(30)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="referral_incentive"
+                baseColumnNames="referral_id"
+                referencedTableName="referral_context"
+                referencedColumnNames="id"
+                constraintName="fk_incentive_referral"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="referral_incentive"
+                baseColumnNames="applied_rule_id"
+                referencedTableName="referral_incentive_rule"
+                referencedColumnNames="id"
+                constraintName="fk_incentive_applied_rule"
+        />
+
+    </changeSet>
+
+</databaseChangeLog>

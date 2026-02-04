@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <include file="db/changelog/changes/001-init.xml"/>
+    <include file="db/changelog/changes/002-create-providers.xml"/>
+    <include file="db/changelog/changes/003-create-patients.xml"/>
+    <include file="db/changelog/changes/004-referral-context.xml"/>
+    <include file="db/changelog/changes/005-create-external-provider.xml" />
+    <include file="/db/changelog/changes/006-create-incentive-rule.xml" />
+    <include file="db/changelog/changes/007-add-applied-incentive-rule-to-referral.xml" />
+    <include file="db/changelog/changes/008-create-incentive.xml" />
+    <include file="db/changelog/changes/009-create-incentive-payments.xml" />
+
+</databaseChangeLog>

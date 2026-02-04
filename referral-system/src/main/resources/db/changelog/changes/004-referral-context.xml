@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+   <changeSet id="004-referral-context" author="senthilathiban">
+       <createTable tableName="referral_context">
+           <!-- PK -->
+           <column name="id" type="uuid">
+               <constraints nullable="false" unique="true" />
+           </column>
+
+            <!-- FK -->
+           <column name="patient_id" type="uuid">
+               <constraints nullable="false" />
+           </column>
+
+           <!-- referrer -->
+           <!-- FK -->
+           <column name="referrer_provider_id" type="uuid">
+               <constraints nullable="false" />
+           </column>
+           
+           <column name="referrer_location_id" type="uuid" />
+
+           <!-- receiver -->
+           <column name="receiver_type" type="varchar(30)">
+                <constraints nullable="false" />
+           </column>
+
+           <column name="receiver_provider_id" type="uuid" />
+           <column name="receiver_external_provider_id" type="uuid" />
+           <column name="receiver_location_id" type="uuid" />
+
+           <!-- clinical (immutable) -->
+           <column name="reason_concept_code" type="varchar(100)"/>
+           <column name="clinical_summary" type="text"/>
+           <column name="clinical_notes" type="text"/>
+
+           <!-- workflow -->
+           <column name="status" type="varchar(30)">
+                <constraints nullable="false" />
+           </column>
+
+           <column name="status_updated_at" type="timestamp" />
+           <column name="receiver_acknowledged_at" type="timestamp" />
+
+           <!-- meta -->
+           <column name="source" type="varchar(30)"/>
+           <column name="priority" type="varchar(30)"/>
+
+           <!-- audit -->
+           <column name="created_by_provider_id" type="uuid">
+               <constraints nullable="false"/>
+           </column>
+
+           <column name="created_at" type="timestamp">
+               <constraints nullable="false"/>
+           </column>
+       </createTable>
+
+       <createIndex tableName="referral_context" indexName="idx_referral_patient">
+           <column name="patient_id"/>
+       </createIndex>
+
+       <createIndex tableName="referral_context" indexName="idx_referral_provider">
+           <column name="receiver_provider_id" />
+           <column name="receiver_external_provider_id"/>
+       </createIndex>
+   </changeSet>
+
+    <changeSet id="004-fk-referral" author="senthilathiban">
+        <addForeignKeyConstraint
+                baseTableName="referral_context"
+                baseColumnNames="patient_id"
+                referencedTableName="patient"
+                referencedColumnNames="id"
+                constraintName="fk_referral_patient"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="referral_context"
+                baseColumnNames="referrer_provider_id"
+                referencedTableName="provider"
+                referencedColumnNames="id"
+                constraintName="fk_referral_referrer_provider"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="referral_context"
+                baseColumnNames="created_by_provider_id"
+                referencedTableName="provider"
+                referencedColumnNames="id"
+                constraintName="fk_referral_created_by_provider"
+        />
+    </changeSet>
+</databaseChangeLog>
