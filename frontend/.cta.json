@@ -11,6 +11,8 @@
   "chosenAddOns": [
     "eslint",
     "nitro",
-    "start"
+    "start",
+    "shadcn",
+    "tanstack-query"
   ]
 }
