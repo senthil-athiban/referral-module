@@ -1,7 +1,10 @@
 package com.indiclinic.referral_system.referral.dto;
 
 import com.indiclinic.referral_system.incentive.payment.dto.ReferralIncentivePaymentResponse;
+import com.indiclinic.referral_system.provider.Provider;
+import com.indiclinic.referral_system.provider.external.ExternalProvider;
 import com.indiclinic.referral_system.referral.domain.*;
+import jakarta.persistence.Column;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,6 +22,7 @@ public record ReferralContextWithIncentiveResponse(
         /* referrer */
         UUID referrerProviderId,
         UUID referrerLocationId,
+        Provider referrerProvider,
 
         /* receiver */
         Receiver receiver,
@@ -47,7 +51,9 @@ public record ReferralContextWithIncentiveResponse(
             ReceiverType type,
             UUID providerId,
             UUID externalProviderId,
-            UUID locationId
+            UUID locationId,
+            Provider provider,
+            ExternalProvider externalProvider
     ) {}
 
     public record Incentive(
@@ -66,14 +72,20 @@ public record ReferralContextWithIncentiveResponse(
     public static ReferralContextWithIncentiveResponse from(
             ReferralContext rc,
             com.indiclinic.referral_system.incentive.record.ReferralIncentive incentive,
-            List<com.indiclinic.referral_system.incentive.payment.ReferralIncentivePayment> payments
+            List<com.indiclinic.referral_system.incentive.payment.ReferralIncentivePayment> payments,
+            Provider referrerProvider,
+            Provider provider,
+            ExternalProvider externalProvider
     ) {
+
 
         Receiver receiver = new Receiver(
                 rc.getReceiverType(),
                 rc.getReceiverProviderId(),
                 rc.getReceiverExternalProviderId(),
-                rc.getReceiverLocationId()
+                rc.getReceiverLocationId(),
+                provider,
+                externalProvider
         );
 
         Incentive incentiveDto = null;
@@ -101,7 +113,7 @@ public record ReferralContextWithIncentiveResponse(
 
                 rc.getReferrerProviderId(),
                 rc.getReferrerLocationId(),
-
+                referrerProvider,
                 receiver,
 
                 rc.getReasonConceptCode(),

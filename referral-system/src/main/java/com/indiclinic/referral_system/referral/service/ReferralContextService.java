@@ -12,6 +12,10 @@ import com.indiclinic.referral_system.incentive.record.ReferralIncentiveService;
 import com.indiclinic.referral_system.incentive.record.dto.ReferralIncentiveResponse;
 import com.indiclinic.referral_system.incentive.rule.ReferralIncentiveRule;
 import com.indiclinic.referral_system.incentive.rule.ReferralIncentiveRuleRepository;
+import com.indiclinic.referral_system.provider.Provider;
+import com.indiclinic.referral_system.provider.ProviderRepository;
+import com.indiclinic.referral_system.provider.external.ExternalProvider;
+import com.indiclinic.referral_system.provider.external.ExternalProviderRepository;
 import com.indiclinic.referral_system.referral.domain.ReceiverType;
 import com.indiclinic.referral_system.referral.domain.ReferralContext;
 import com.indiclinic.referral_system.referral.dto.CreateReferralContextReq;
@@ -36,6 +40,8 @@ public class ReferralContextService {
     private final ReferralIncentiveRepository incentiveRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentService paymentService;
+    private final ProviderRepository providerRepository;
+    private final ExternalProviderRepository externalProviderRepository;
 
     public ReferralContextService(
             ReferralContextRepository referralRepository,
@@ -43,7 +49,9 @@ public class ReferralContextService {
             ReferralIncentiveRuleRepository incentiveRuleRepository,
             ReferralIncentiveRepository incentiveRepository,
             PaymentRepository paymentRepository,
-            PaymentService paymentService
+            PaymentService paymentService,
+            ProviderRepository providerRepository,
+            ExternalProviderRepository externalProviderRepository
     ) {
         this.referralRepository = referralRepository;
         this.incentiveService = incentiveService;
@@ -51,6 +59,8 @@ public class ReferralContextService {
         this.incentiveRepository = incentiveRepository;
         this.paymentRepository = paymentRepository;
         this.paymentService = paymentService;
+        this.providerRepository = providerRepository;
+        this.externalProviderRepository = externalProviderRepository;
     }
 
     public ReferralContext create(CreateReferralContextReq req) {
@@ -295,10 +305,27 @@ public class ReferralContextService {
                             paymentService.findByIncentiveId(i.getId())
                     ).orElse(List.of());
 
+            Provider referrerProvider = providerRepository.findById(referral.getReferrerProviderId())
+                    .orElseThrow(() -> new ApiException("Couldnt find the referrer provider " + referral.getReferrerProviderId()));
+
+            Provider receiverProvider = null;
+            ExternalProvider receiverExternalProvider = null;
+
+            if (referral.getReceiverProviderId() != null) {
+                receiverProvider = providerRepository.findById(referral.getReceiverProviderId())
+                        .orElseThrow(() -> new ApiException("Couldnt find the receiver provider " + referral.getReferrerProviderId()));
+            } else if (referral.getReceiverExternalProviderId() != null) {
+                receiverExternalProvider = externalProviderRepository.findById(referral.getReceiverExternalProviderId())
+                        .orElseThrow(() -> new ApiException("Couldnt find the external receiver provider " + referral.getReferrerProviderId()));
+            }
+
             return ReferralContextWithIncentiveResponse.from(
                     referral,
                     incentiveOpt.orElse(null),
-                    payments
+                    payments,
+                    referrerProvider,
+                    receiverProvider,
+                    receiverExternalProvider
             );
         }).toList();
     }

@@ -62,6 +62,62 @@ export function ReferralCard({
               </div>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-4 bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+              <div className="space-y-1">
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">
+                  Referrer
+                </span>
+                <div className="flex items-center gap-2">
+                  <div className="size-7 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+                    <User size={14} />
+                  </div>
+                  <span className="text-sm font-bold text-gray-900">
+                    {referral.referrerProvider?.name || 'Unknown'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="hidden sm:flex items-center justify-center text-gray-300">
+                <ChevronRight size={20} />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                    Receiver
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className={`text-[8px] h-3.5 px-1 uppercase ${
+                      referral.receiver.type === 'EXTERNAL_PROVIDER'
+                        ? 'bg-purple-50 text-purple-600 border-purple-100'
+                        : 'bg-green-50 text-green-600 border-green-100'
+                    }`}
+                  >
+                    {referral.receiver.type === 'EXTERNAL_PROVIDER'
+                      ? 'External'
+                      : 'Internal'}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`size-7 rounded-full flex items-center justify-center border ${
+                      referral.receiver.type === 'EXTERNAL_PROVIDER'
+                        ? 'bg-purple-50 text-purple-600 border-purple-100'
+                        : 'bg-green-50 text-green-600 border-green-100'
+                    }`}
+                  >
+                    <Stethoscope size={14} />
+                  </div>
+                  <span className="text-sm font-bold text-gray-900">
+                    {referral.receiver.type === 'PROVIDER'
+                      ? referral.receiver.provider?.name
+                      : referral.receiver.externalProvider?.name || 'Unknown'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-600 border border-gray-100 italic">
               "{referral.clinicalNotes || 'No clinical notes provided.'}"
             </div>

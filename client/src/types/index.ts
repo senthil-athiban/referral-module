@@ -47,10 +47,15 @@ export interface Referral {
   id: string
   patientId: string
   referrerProviderId: string
+  referrerLocationId: string
+  referrerProvider: Provider
   receiver: {
     type: ReceiverType
     providerId: string | null
     externalProviderId: string | null
+    locationId: string | null
+    provider: Provider | null
+    externalProvider: ExternalProvider | null
   }
   clinicalSummary: string
   clinicalNotes: string

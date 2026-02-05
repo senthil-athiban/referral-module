@@ -45,11 +45,20 @@ function ReferralListPage() {
     },
   })
 
-  const filteredReferrals = referrals.filter(
-    (r) =>
-      r.clinicalSummary.toLowerCase().includes(search.toLowerCase()) ||
-      r.id.toLowerCase().includes(search.toLowerCase()),
-  )
+  const filteredReferrals = referrals.filter((r) => {
+    const searchLower = search.toLowerCase()
+    const receiverName =
+      r.receiver.type === 'PROVIDER'
+        ? r.receiver.provider?.name
+        : r.receiver.externalProvider?.name
+
+    return (
+      r.clinicalSummary.toLowerCase().includes(searchLower) ||
+      r.id.toLowerCase().includes(searchLower) ||
+      r.referrerProvider?.name.toLowerCase().includes(searchLower) ||
+      receiverName?.toLowerCase().includes(searchLower)
+    )
+  })
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
