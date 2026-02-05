@@ -11,6 +11,8 @@ import java.util.UUID;
 public interface ReferralIncentiveRepository extends JpaRepository<ReferralIncentive, UUID> {
     Optional<ReferralIncentive> findByReferralId(UUID referralId);
     List<ReferralIncentive> findByBeneficiaryProviderId(UUID providerId);
+    List<ReferralIncentive> findByBeneficiaryProviderIdAndPayerProviderId(UUID beneficiaryProviderId,
+                                                                          UUID counterPartyProviderId);
 
     @Query("""
         SELECT new com.indiclinic.referral_system.referral.dto.IncentiveStats(

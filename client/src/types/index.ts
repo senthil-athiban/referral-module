@@ -75,3 +75,25 @@ export interface AuthResponse {
   id: string
   name: string
 }
+
+export interface ProviderStats {
+  providerId: string
+  providerName: string
+  outgoing: {
+    total: number
+    accepted: number
+    rejected: number
+    completed: number
+  }
+  incoming: {
+    total: number
+    accepted: number
+    rejected: number
+    completed: number
+  }
+  incentive: {
+    totalAmount: number
+    paidAmount: number
+    pendingAmount: number
+  }
+}

@@ -26,4 +26,11 @@ public class DoctorNetworkController {
     ) {
         return service.getDoctorNetwork(providerId);
     }
+
+    @GetMapping("/{providerId}/verify")
+    public List<DoctorNetworkEntry> getNetworks(
+            @PathVariable UUID providerId
+    ) {
+        return service.getDoctorNetwork(providerId);
+    }
 }

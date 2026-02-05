@@ -1,7 +1,13 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '../../context/auth-context'
 import { Button } from '../ui/button'
-import { LayoutDashboard, Users, BadgeDollarSign, LogOut } from 'lucide-react'
+import {
+  LayoutDashboard,
+  Users,
+  BadgeDollarSign,
+  LogOut,
+  Network,
+} from 'lucide-react'
 
 export function Sidebar() {
   const navigate = useNavigate()
@@ -11,6 +17,7 @@ export function Sidebar() {
     { title: 'Dashboard', to: '/', icon: LayoutDashboard },
     { title: 'Referrals', to: '/referrals', icon: Users },
     { title: 'Incentives', to: '/incentives', icon: BadgeDollarSign },
+    { title: 'Network', to: '/network', icon: Network },
   ]
 
   const handleLogout = () => {
