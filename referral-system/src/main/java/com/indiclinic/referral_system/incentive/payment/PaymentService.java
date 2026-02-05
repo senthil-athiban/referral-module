@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -68,6 +69,10 @@ public class PaymentService {
         }
 
         return payment;
+    }
+
+    public List<ReferralIncentivePayment> findByIncentiveId(UUID incentiveId) {
+        return paymentRepository.findByIncentiveId(incentiveId);
     }
 
 }

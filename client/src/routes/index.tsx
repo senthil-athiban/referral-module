@@ -1,118 +1,187 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useAuth } from '../context/auth-context'
 import {
-  Zap,
-  Server,
-  Route as RouteIcon,
-  Shield,
-  Waves,
-  Sparkles,
+  Users,
+  ArrowUpRight,
+  ArrowDownLeft,
+  Clock,
+  CheckCircle2,
+  TrendingUp,
+  Wallet,
 } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { useQuery } from '@tanstack/react-query'
+import api from '../lib/api'
+import { Referral } from '../types'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({
+  component: Dashboard,
+})
 
-function App() {
-  const features = [
+function Dashboard() {
+  const { user } = useAuth()
+
+  const { data: referrals = [], isLoading } = useQuery<Referral[]>({
+    queryKey: ['referrals', user?.id],
+    queryFn: async () => {
+      const response = await api.get(`/referral?providerId=${user?.id}`)
+      return response.data
+    },
+    enabled: !!user?.id,
+  })
+  console.log('referrals:', referrals)
+
+  const stats = [
     {
-      icon: <Zap className="w-12 h-12 text-cyan-400" />,
-      title: 'Powerful Server Functions',
-      description:
-        'Write server-side code that seamlessly integrates with your client components. Type-safe, secure, and simple.',
+      title: 'Total Referrals',
+      value: referrals.length,
+      icon: Users,
+      trend: '+12%',
+      color: 'text-blue-600',
+      bg: 'bg-blue-50',
     },
     {
-      icon: <Server className="w-12 h-12 text-cyan-400" />,
-      title: 'Flexible Server Side Rendering',
-      description:
-        'Full-document SSR, streaming, and progressive enhancement out of the box. Control exactly what renders where.',
+      title: 'Pending Action',
+      value: referrals.filter((r) => r.status === 'SENT').length,
+      icon: Clock,
+      trend: '4 needs review',
+      color: 'text-amber-600',
+      bg: 'bg-amber-50',
     },
     {
-      icon: <RouteIcon className="w-12 h-12 text-cyan-400" />,
-      title: 'API Routes',
-      description:
-        'Build type-safe API endpoints alongside your application. No separate backend needed.',
+      title: 'Completed',
+      value: referrals.filter((r) => r.status === 'COMPLETED').length,
+      icon: CheckCircle2,
+      trend: '+2 today',
+      color: 'text-green-600',
+      bg: 'bg-green-50',
     },
     {
-      icon: <Shield className="w-12 h-12 text-cyan-400" />,
-      title: 'Strongly Typed Everything',
-      description:
-        'End-to-end type safety from server to client. Catch errors before they reach production.',
-    },
-    {
-      icon: <Waves className="w-12 h-12 text-cyan-400" />,
-      title: 'Full Streaming Support',
-      description:
-        'Stream data from server to client progressively. Perfect for AI applications and real-time updates.',
-    },
-    {
-      icon: <Sparkles className="w-12 h-12 text-cyan-400" />,
-      title: 'Next Generation Ready',
-      description:
-        'Built from the ground up for modern web applications. Deploy anywhere JavaScript runs.',
+      title: 'Earnings',
+      value: `₹${referrals.reduce((acc, r) => acc + (r.incentive?.netAmount || 0), 0)}`,
+      icon: Wallet,
+      trend: 'Target: ₹50k',
+      color: 'text-purple-600',
+      bg: 'bg-purple-50',
     },
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-      <section className="relative py-20 px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10"></div>
-        <div className="relative max-w-5xl mx-auto">
-          <div className="flex items-center justify-center gap-6 mb-6">
-            <img
-              src="/tanstack-circle-logo.png"
-              alt="TanStack Logo"
-              className="w-24 h-24 md:w-32 md:h-32"
-            />
-            <h1 className="text-6xl md:text-7xl font-black text-white [letter-spacing:-0.08em]">
-              <span className="text-gray-300">TANSTACK</span>{' '}
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                START
-              </span>
-            </h1>
-          </div>
-          <p className="text-2xl md:text-3xl text-gray-300 mb-4 font-light">
-            The framework for next generation AI applications
-          </p>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
-            Full-stack framework powered by TanStack Router for React and Solid.
-            Build modern applications with server functions, streaming, and type
-            safety.
-          </p>
-          <div className="flex flex-col items-center gap-4">
-            <a
-              href="https://tanstack.com/start"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-cyan-500/50"
-            >
-              Documentation
-            </a>
-            <p className="text-gray-400 text-sm mt-2">
-              Begin your TanStack Start journey by editing{' '}
-              <code className="px-2 py-1 bg-slate-700 rounded text-cyan-400">
-                /src/routes/index.tsx
-              </code>
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+          Dashboard
+        </h2>
+        <p className="text-gray-500 mt-1">
+          Overview of your referral network and earnings.
+        </p>
+      </div>
 
-      <section className="py-16 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10"
-            >
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-white mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-400 leading-relaxed">
-                {feature.description}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <Card
+            key={stat.title}
+            className="border-none shadow-sm hover:shadow-md transition-shadow"
+          >
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium text-gray-500">
+                {stat.title}
+              </CardTitle>
+              <div className={`${stat.bg} p-2 rounded-lg`}>
+                <stat.icon className={`size-5 ${stat.color}`} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className="text-xs text-gray-400 mt-1">
+                <span className="text-green-500 font-medium inline-flex items-center gap-0.5">
+                  <TrendingUp className="size-3" /> {stat.trend}
+                </span>{' '}
+                from last month
               </p>
-            </div>
-          ))}
-        </div>
-      </section>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4 border-none shadow-sm">
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-16 w-full animate-pulse bg-gray-50 rounded-lg"
+                  />
+                ))}
+              </div>
+            ) : referrals.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-500 italic">
+                No recent referrals found.
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {referrals.slice(0, 5).map((referral) => (
+                  <div
+                    key={referral.id}
+                    className="flex items-center justify-between group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`p-2 rounded-full ${referral.status === 'SENT' ? 'bg-blue-50' : 'bg-gray-50'}`}
+                      >
+                        {referral.status === 'SENT' ? (
+                          <ArrowUpRight className="size-4 text-blue-600" />
+                        ) : (
+                          <ArrowDownLeft className="size-4 text-gray-600" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          Referral ID: {referral.id.slice(0, 8)}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {referral.clinicalSummary}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">
+                        ₹{referral.incentive?.baseAmount}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {new Date(referral.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-3 border-none shadow-sm bg-linear-to-br from-slate-600 to-slate-700 text-white">
+          <CardHeader>
+            <CardTitle className="text-white font-bold">
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <button className="w-full flex items-center justify-between p-4 bg-white/10 hover:bg-white/20 rounded-xl transition-colors group">
+              <span className="font-semibold">Create New Referral</span>
+              <ArrowUpRight className="size-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </button>
+            <button className="w-full flex items-center justify-between p-4 bg-white/10 hover:bg-white/20 rounded-xl transition-colors group">
+              <span className="font-semibold">Manage Incentives</span>
+              <ArrowUpRight className="size-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

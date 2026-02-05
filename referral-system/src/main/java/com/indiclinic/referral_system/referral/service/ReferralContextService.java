@@ -2,6 +2,8 @@ package com.indiclinic.referral_system.referral.service;
 
 import com.indiclinic.referral_system.common.ApiException;
 import com.indiclinic.referral_system.incentive.payment.PaymentRepository;
+import com.indiclinic.referral_system.incentive.payment.PaymentService;
+import com.indiclinic.referral_system.incentive.payment.ReferralIncentivePayment;
 import com.indiclinic.referral_system.incentive.payment.dto.ReferralContextDetailsResponse;
 import com.indiclinic.referral_system.incentive.payment.dto.ReferralIncentivePaymentResponse;
 import com.indiclinic.referral_system.incentive.record.ReferralIncentive;
@@ -14,6 +16,7 @@ import com.indiclinic.referral_system.referral.domain.ReceiverType;
 import com.indiclinic.referral_system.referral.domain.ReferralContext;
 import com.indiclinic.referral_system.referral.dto.CreateReferralContextReq;
 import com.indiclinic.referral_system.referral.dto.ReferralContextResponse;
+import com.indiclinic.referral_system.referral.dto.ReferralContextWithIncentiveResponse;
 import com.indiclinic.referral_system.referral.dto.UpdateReferralContextReq;
 import com.indiclinic.referral_system.referral.repository.ReferralContextRepository;
 import jakarta.transaction.Transactional;
@@ -32,19 +35,22 @@ public class ReferralContextService {
     private final ReferralIncentiveRuleRepository incentiveRuleRepository;
     private final ReferralIncentiveRepository incentiveRepository;
     private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
     public ReferralContextService(
             ReferralContextRepository referralRepository,
             ReferralIncentiveService incentiveService,
             ReferralIncentiveRuleRepository incentiveRuleRepository,
             ReferralIncentiveRepository incentiveRepository,
-            PaymentRepository paymentRepository
+            PaymentRepository paymentRepository,
+            PaymentService paymentService
     ) {
         this.referralRepository = referralRepository;
         this.incentiveService = incentiveService;
         this.incentiveRuleRepository = incentiveRuleRepository;
         this.incentiveRepository = incentiveRepository;
         this.paymentRepository = paymentRepository;
+        this.paymentService = paymentService;
     }
 
     public ReferralContext create(CreateReferralContextReq req) {
@@ -272,4 +278,30 @@ public class ReferralContextService {
     private boolean hasPriorityUpdate(UpdateReferralContextReq req) {
         return isValidValue(req.priority);
     }
+
+    /* DTO based responses */
+    public List<ReferralContextWithIncentiveResponse> findAllForProvider(UUID providerId) {
+
+        List<ReferralContext> referrals =
+                referralRepository.findAllByProvider(providerId);
+
+        return referrals.stream().map(referral -> {
+
+            Optional<ReferralIncentive> incentiveOpt =
+                    incentiveService.findOptionalByReferralId(referral.getId());
+
+            List<ReferralIncentivePayment> payments =
+                    incentiveOpt.map(i ->
+                            paymentService.findByIncentiveId(i.getId())
+                    ).orElse(List.of());
+
+            return ReferralContextWithIncentiveResponse.from(
+                    referral,
+                    incentiveOpt.orElse(null),
+                    payments
+            );
+        }).toList();
+    }
+
+
 }

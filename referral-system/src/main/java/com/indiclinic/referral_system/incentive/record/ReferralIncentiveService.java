@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -48,5 +49,10 @@ public class ReferralIncentiveService {
     public List<ReferralIncentive> incentivesEarnedBy(UUID providerId) {
         return incentiveRepository.findByBeneficiaryProviderId(providerId);
     }
+
+    public Optional<ReferralIncentive> findOptionalByReferralId(UUID referralId) {
+        return incentiveRepository.findByReferralId(referralId);
+    }
+
 
 }

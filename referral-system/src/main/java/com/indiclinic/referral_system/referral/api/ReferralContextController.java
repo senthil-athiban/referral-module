@@ -3,6 +3,7 @@ import com.indiclinic.referral_system.incentive.payment.dto.ReferralContextDetai
 import com.indiclinic.referral_system.referral.domain.ReceiverType;
 import com.indiclinic.referral_system.referral.dto.CreateReferralContextReq;
 import com.indiclinic.referral_system.referral.dto.ReferralContextResponse;
+import com.indiclinic.referral_system.referral.dto.ReferralContextWithIncentiveResponse;
 import com.indiclinic.referral_system.referral.dto.UpdateReferralContextReq;
 import com.indiclinic.referral_system.referral.service.ReferralContextService;
 import jakarta.validation.Valid;
@@ -31,16 +32,25 @@ public class ReferralContextController {
 //        return service.findAll().stream().map(ReferralContextResponse::from).toList();
 //    }
 
+//    @GetMapping
+//    public List<ReferralContextResponse> getAll(
+//            @RequestParam UUID providerId,
+//            @RequestParam(required = false) ReceiverType receiverType
+//    ) {
+//        return service.findForProvider(providerId, receiverType)
+//                .stream()
+//                .map(ReferralContextResponse::from)
+//                .toList();
+//    }
+
     @GetMapping
-    public List<ReferralContextResponse> getAll(
+    public List<ReferralContextWithIncentiveResponse> getAllByProvider(
             @RequestParam UUID providerId,
             @RequestParam(required = false) ReceiverType receiverType
     ) {
-        return service.findForProvider(providerId, receiverType)
-                .stream()
-                .map(ReferralContextResponse::from)
-                .toList();
+        return service.findAllForProvider(providerId);
     }
+
 
     @GetMapping("/inbox/{providerId}")
     public List<ReferralContextResponse> inbox(@PathVariable UUID providerId) {
