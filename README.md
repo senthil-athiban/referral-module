@@ -1,19 +1,26 @@
-# Referral Management System
+# 🏥 Referral Management System
 
-A full-stack application for managing referrals, featuring a Spring Boot backend and a modern React frontend.
+A robust full-stack application designed to streamline the referral process. Built with a powerful **Spring Boot** backend and a high-performance **React** frontend.
 
-## 🏗 Project Structure
+---
 
-- **referral-system**: Java Spring Boot backend application.
-- **client**: React frontend application built with Vite and Tailwind CSS.
+## 📁 Project Structure
+
+```text
+.
+├── referral-system/    # Spring Boot Backend (Java 21, Maven)
+└── client/             # React Frontend (Vite, Tailwind, TanStack)
+```
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Prerequisites (Database Setup)
+Follow these steps to get the environment up and running.
 
-The backend requires a PostgreSQL database. You can spin up a containerized instance using Docker:
+### 1. Database Setup (Docker) 🐳
+
+The backend requires a PostgreSQL database. Start a container using the following command:
 
 ```bash
 docker run -d \
@@ -25,10 +32,10 @@ docker run -d \
   postgres:16
 ```
 
-### 2. Backend Setup (referral-system)
+### 2. Backend Setup (`referral-system`) ☕
 
-1.  **Verify Configuration**:
-    Check `referral-system/src/main/resources/application.properties` to ensure the database connection details match your Docker setup:
+1.  **Configuration Check**:
+    Verify the database credentials in `referral-system/src/main/resources/application.properties`:
 
     ```properties
     spring.datasource.url=jdbc:postgresql://localhost:5433/referral_db
@@ -36,31 +43,33 @@ docker run -d \
     spring.datasource.password=password
     ```
 
-2.  **Run the Backend**:
-    Navigate to the `referral-system` directory and run:
+2.  **Run the Server**:
+    Navigate to the `referral-system` directory and execute:
     ```bash
     mvn spring-boot:run
     ```
-    The server will start on [http://localhost:8080](http://localhost:8080).
+    _The API will be available at:_ `http://localhost:8080`
 
-### 3. Frontend Setup (client)
+### 3. Frontend Setup (`client`) ⚛️
 
-1.  **Install Dependencies**:
-    Navigate to the `client` directory and run:
+1.  **Installation**:
+    Navigate to the `client` directory and install dependencies:
 
     ```bash
     npm install
     ```
 
-2.  **Run Development Server**:
+2.  **Development Mode**:
+    Launch the Vite development server:
 
     ```bash
     npm run dev
     ```
 
-    The client will be available at [http://localhost:3000](http://localhost:3000).
+    _The app will be available at:_ `http://localhost:3000`
 
-3.  **Build for Production** (Optional):
+3.  **Production Build**:
+    To create a production-ready bundle:
     ```bash
     npm run build
     ```
@@ -69,5 +78,17 @@ docker run -d \
 
 ## 🛠 Tech Stack
 
-- **Backend**: Java 21, Spring Boot, Spring Data JPA, PostgreSQL, Liquibase.
-- **Frontend**: React, Vite, Tailwind CSS, TanStack Query, TanStack Router.
+### Backend
+
+- **Java 21** & **Spring Boot 3**
+- **Spring Data JPA** (Hibernate)
+- **PostgreSQL** (Port 5433)
+- **Liquibase** (Database Migrations)
+
+### Frontend
+
+- **React 19** & **Vite**
+- **Tailwind CSS** (Styling)
+- **TanStack Query** (Data Fetching)
+- **TanStack Router** (Type-safe Routing)
+- **Lucide React** (Icons)
