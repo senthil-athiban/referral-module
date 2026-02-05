@@ -1,6 +1,7 @@
 package com.indiclinic.referral_system.referral.repository;
 import com.indiclinic.referral_system.referral.domain.ReceiverType;
 import com.indiclinic.referral_system.referral.domain.ReferralContext;
+import com.indiclinic.referral_system.referral.dto.ReferralStats;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -50,4 +51,42 @@ public interface ReferralContextRepository extends JpaRepository<ReferralContext
             UUID externalProviderId,
             UUID internalProviderId
     );
+
+    @Query("""
+        SELECT DISTINCT
+            CASE
+                WHEN r.referrerProviderId = :providerId THEN r.receiverProviderId
+                ELSE r.referrerProviderId
+            END
+        FROM ReferralContext r
+        WHERE r.referrerProviderId = :providerId
+           OR r.receiverProviderId = :providerId
+    """)
+    List<UUID> findNetworkProviderIds(UUID providerId);
+
+    @Query("""
+        SELECT new com.indiclinic.referral_system.referral.dto.ReferralStats(
+            COUNT(r),
+            COALESCE(SUM(CASE WHEN r.status = 'ACCEPTED' THEN 1 ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN r.status = 'REJECTED' THEN 1 ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN r.status = 'COMPLETED' THEN 1 ELSE 0 END), 0)
+        )
+        FROM ReferralContext r
+        WHERE r.referrerProviderId = :fromProvider
+          AND r.receiverProviderId = :toProvider
+    """)
+    ReferralStats outgoingStats(UUID fromProvider, UUID toProvider);
+
+    @Query("""
+        SELECT new com.indiclinic.referral_system.referral.dto.ReferralStats(
+            COUNT(r),
+            COALESCE(SUM(CASE WHEN r.status = 'ACCEPTED' THEN 1 ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN r.status = 'REJECTED' THEN 1 ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN r.status = 'COMPLETED' THEN 1 ELSE 0 END), 0)
+        )
+        FROM ReferralContext r
+        WHERE r.referrerProviderId = :fromProvider
+          AND r.receiverProviderId = :toProvider
+    """)
+    ReferralStats incomingStats(UUID fromProvider, UUID toProvider);
 }
