@@ -76,6 +76,37 @@ docker run -d \
 
 ---
 
+## 📖 API Documentation (Swagger)
+
+Once the backend is running, you can access the interactive API documentation (Swagger UI) at:
+👉 **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
+
+---
+
+## 🛰 Key API Endpoints
+
+### Referral Management
+
+- `POST /api/v1/referral` - Create a new referral
+- `GET /api/v1/referral` - List all referrals for a provider
+- `GET /api/v1/referral/inbox/{providerId}` - Get inbox for a specific provider
+- `POST /api/v1/referral/{id}/accept` - Accept a referral
+- `POST /api/v1/referral/{id}/reject` - Reject a referral
+- `POST /api/v1/referral/{id}/workflow` - Process referral workflow action
+
+### Incentive Rules
+
+- `GET /api/v1/incentive-rule` - List active incentive rules
+- `POST /api/v1/incentive-rule` - Create a new rule
+
+### Providers & Patients
+
+- `GET /api/v1/provider` - List internal providers
+- `GET /api/v1/external-provider` - List external providers
+- `GET /api/v1/patient` - List patients
+
+---
+
 ## 🛠 Tech Stack
 
 ### Backend
